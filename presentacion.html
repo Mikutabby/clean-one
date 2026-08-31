@@ -1,0 +1,414 @@
+<!DOCTYPE html><!--
+  KIT TECH — Mantenimiento Tecnológico
+  Plantilla: Corporativo Ejecutivo (Nexo)
+  Estilo: profesional, limpio, datos claros
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Kit Tech · Mantenimiento Tecnológico</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; overflow:hidden; }
+  body { background:#fff; color:#1e2a3a; font-family:'Calibri','Segoe UI',Arial,sans-serif; }
+
+  /* ===== FONDO ===== */
+  .fondo { position:fixed; inset:0; z-index:0; overflow:hidden; }
+  .capa-f { position:absolute; inset:-3%; will-change:translate; transition:translate .2s ease-out; }
+  .f-gradiente {
+    background:linear-gradient(160deg,#ffffff 0%,#f2f6fb 45%,#e7eef8 100%);
+  }
+  .f-circulo {
+    top:auto; left:auto;
+    width:64vmax; height:64vmax; right:-18vmax; top:-24vmax; inset:auto;
+    border-radius:50%;
+    background:radial-gradient(circle at center, rgba(22,48,92,.07) 0%, transparent 68%);
+  }
+  .f-arco {
+    bottom:-30vmax; left:-14vmax; inset:auto;
+    width:52vmax; height:52vmax; border-radius:50%;
+    border:1.5px solid rgba(200,147,59,.25);
+    box-shadow:0 0 0 34px rgba(200,147,59,.05), 0 0 0 70px rgba(22,48,92,.04);
+  }
+  .f-lineas {
+    background:
+      repeating-linear-gradient(115deg, rgba(22,48,92,.025) 0 1px, transparent 1px 90px);
+    mask-image:linear-gradient(115deg, black 0%, transparent 55%);
+    -webkit-mask-image:linear-gradient(115deg, black 0%, transparent 55%);
+  }
+
+  .deck { position:relative; z-index:1; }
+
+  /* Barra superior */
+  .barra { position:fixed; top:0; left:0; right:0; height:8px; background:#16305c; z-index:5;}
+  .logo { position:fixed; top:22px; left:48px; z-index:5; font-weight:bold; letter-spacing:2px;
+          font-size:.85rem; color:#16305c; text-transform:uppercase;}
+
+  .deck { display:flex; height:100vh; transition:transform .55s ease-in-out; }
+  .slide {
+    min-width:100vw; padding:12vh 9vw 10vh;
+    display:flex; flex-direction:column; justify-content:center;
+    opacity:0; transform:none; visibility:hidden;
+    transition:opacity .45s .25s, visibility 0s .7s;
+  }
+  .slide.activa { opacity:1; visibility:visible; }
+
+  h1 { font-size:clamp(2rem,4.6vw,3.6rem); font-weight:700; color:#16305c; line-height:1.15;}
+  h2 { font-size:clamp(1.4rem,2.8vw,2.1rem); font-weight:600; color:#16305c; margin-bottom:.6rem;}
+  .subrayado { width:56px; height:4px; background:#c8933b; margin:1.2rem 0 2.2rem; }
+  p { color:#4a5568; line-height:1.7; font-size:clamp(.95rem,1.8vw,1.12rem); max-width:70ch;}
+  .kicker { color:#c8933b; font-size:.78rem; letter-spacing:3px; text-transform:uppercase; margin-bottom:1rem; font-weight:600;}
+
+  ul.puntos { list-style:none; margin-top:.5rem; max-width:75ch;}
+  ul.puntos li { padding:.85rem 0; border-bottom:1px solid #e5e9f0; display:flex; gap:1rem; align-items:baseline;
+                 font-size:clamp(.95rem,1.8vw,1.1rem); color:#33415c;}
+  ul.puntos li::before { content:'▸'; color:#c8933b; font-size:1.1em;}
+
+  /* Tarjetas */
+  .fila { display:flex; gap:1.4rem; flex-wrap:wrap; margin-top:.5rem;}
+  .tarjeta { flex:1; min-width:200px; background:#f6f8fb; border:1px solid #dfe5ee; border-radius:10px;
+             padding:1.4rem 1.5rem; }
+  .tarjeta b { display:block; font-size:clamp(1.5rem,2.8vw,2.2rem); color:#16305c; margin-bottom:.2rem;}
+  .tarjeta small { color:#7a8699; font-size:.82rem; letter-spacing:.5px; line-height:1.4; display:block;}
+  .tarjeta.acento { border-top:4px solid #c8933b; }
+
+  /* Tabla */
+  table { border-collapse:collapse; width:100%; max-width:900px; margin-top:.5rem; font-size:clamp(.85rem,1.6vw,.95rem);}
+  th { text-align:left; color:#16305c; border-bottom:2px solid #16305c; padding:.6rem .7rem; font-size:.8em; letter-spacing:1px; text-transform:uppercase;}
+  td { padding:.6rem .7rem; border-bottom:1px solid #e5e9f0; color:#4a5568;}
+  tr:hover td { background:#f6f8fb; }
+  .mejor { color:#1e7a3d; font-weight:700; }
+
+  /* Dos columnas */
+  .dos-col { display:grid; grid-template-columns:1fr 1fr; gap:2rem; max-width:900px; }
+
+  /* Galería de fotos */
+  .galeria { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; max-width:900px; }
+  .foto-card { position:relative; border-radius:10px; overflow:hidden; aspect-ratio:4/3; background:#f0f0f0; }
+  .foto-card img { width:100%; height:100%; object-fit:cover; transition:transform .3s; }
+  .foto-card:hover img { transform:scale(1.05); }
+  .foto-card .foto-label {
+    position:absolute; bottom:0; left:0; right:0;
+    background:linear-gradient(transparent, rgba(22,48,92,.85));
+    color:#fff; padding:1.5rem 1rem .8rem; font-size:.85rem; font-weight:600;
+  }
+
+  .pie { position:fixed; bottom:20px; right:48px; z-index:5; font-size:.72rem; color:#98a3b5; letter-spacing:1px;}
+  .nav { position:fixed; bottom:20px; left:50%; translate:-50% 0; display:flex; gap:9px; z-index:5;}
+  .dot { width:8px;height:8px;border-radius:50%;background:#d5dbe6;cursor:pointer;transition:.25s;}
+  .dot.activa{background:#16305c;}
+  .flecha { position:fixed;top:50%;translate:0 -50%;z-index:5;width:40px;height:40px;border-radius:8px;
+            border:1px solid #d5dbe6;background:#fff;color:#16305c;font-size:1.05rem;cursor:pointer;}
+  .flecha:hover{background:#16305c;color:#fff;}
+  #prev{left:14px} #next{right:14px}
+</style>
+</head>
+<body>
+<div class="fondo">
+  <div class="capa-f f-gradiente" data-p="4"></div>
+  <div class="capa-f f-lineas" data-p="10"></div>
+  <div class="capa-f f-circulo" data-p="18"></div>
+  <div class="capa-f f-arco" data-p="26"></div>
+</div>
+<div class="barra"></div>
+<div class="logo">KIT TECH</div>
+
+<div class="deck" id="deck">
+
+  <!-- SLIDE 1: PORTADA -->
+  <section class="slide activa">
+    <div class="kicker">Plan de Negocio · 2026</div>
+    <h1>Kit de Mantenimiento<br>Tecnológico</h1>
+    <div class="subrayado"></div>
+    <p>Kit profesional de limpieza y mantenimiento para PC, laptops, consolas y dispositivos electrónicos. 10 componentes esenciales en un solo paquete.</p>
+    <div class="fila" style="margin-top:2.2rem;">
+      <div class="tarjeta acento"><b>1,000</b><small>Unidades a producir</small></div>
+      <div class="tarjeta"><b>10</b><small>Componentes por kit</small></div>
+      <div class="tarjeta"><b>2</b><small>Proveedores China</small></div>
+      <div class="tarjeta"><b>16</b><small>Semanas de ejecución</small></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: PRODUCTO -->
+  <section class="slide">
+    <div class="kicker">01 — Producto</div>
+    <h2>Contenido del Kit</h2>
+    <div class="subrayado"></div>
+    <div class="dos-col">
+      <div>
+        <ul class="puntos">
+          <li>Paños de microfibra premium (x2)</li>
+          <li>Spray limpiador antiestático (botella 100ml)</li>
+          <li>Cepillo para teclados y ranuras</li>
+          <li>Hisopos de precisión (x5)</li>
+          <li>Pasta térmica alta conductividad (1g)</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="puntos">
+          <li>Espátula plástica de apertura</li>
+          <li>Guantes antiestáticos nitrilo (x2 pares)</li>
+          <li>Alcohol isopropílico 99% (50ml)</li>
+          <li>Etiquetas adhesivas para cables (x10)</li>
+          <li>Manual de mantenimiento impreso</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 2B: GALERÍA FOTOS -->
+  <section class="slide">
+    <div class="kicker">01b — El Kit</div>
+    <h2>Kit Tech Completo</h2>
+    <div class="subrayado"></div>
+    <div style="display:flex; align-items:center; gap:3rem; margin-top:1rem;">
+      <div style="flex:1; max-width:45%;">
+        <img src="img/kit-completo.jpg" alt="Kit Tech - Herramientas de mantenimiento" style="width:100%; border-radius:12px; box-shadow:0 8px 32px rgba(22,48,92,.12);">
+      </div>
+      <div style="flex:1;">
+        <h3 style="color:#16305c; margin-bottom:1rem;">Todo lo que necesitás en un solo kit:</h3>
+        <ul style="list-style:none; padding:0; line-height:2;">
+          <li>🧻 Paños Microfibra (x3)</li>
+          <li>🧊 Pasta Térmica CPU (jeringa)</li>
+          <li>🧴 Spray Limpiador Premium</li>
+          <li>🖌️ Cepillo de Precisión</li>
+          <li>🧤 Guantes Nitrilo Antiestáticos (x2)</li>
+          <li>🧹 Hisopos de Algodón (x10)</li>
+          <li>🔌 Adaptador USB multiusos</li>
+          <li>📦 Empaque premium con manual</li>
+        </ul>
+        <div style="margin-top:1.5rem; padding:1rem; background:rgba(22,48,92,.05); border-radius:8px; border-left:4px solid #c8933b;">
+          <strong style="color:#16305c;">10 componentes esenciales</strong><br>
+          <span style="font-size:.85rem; color:#7a8699;">Para PC, laptops, consolas y dispositivos electrónicos.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3: PROVEEDORES -->
+  <section class="slide">
+    <div class="kicker">02 — Proveedores</div>
+    <h2>Fuentes de Abastecimiento</h2>
+    <div class="subrayado"></div>
+    <div class="dos-col">
+      <div class="tarjeta" style="border-top:4px solid #16305c;">
+        <b style="font-size:1.3rem;">ALIBABA</b>
+        <small>alibaba.com</small>
+        <ul class="puntos" style="margin-top:1rem;">
+          <li>Mayor variedad de productos</li>
+          <li>Gold Supplier verificado</li>
+          <li>Trade Assurance (protección)</li>
+          <li>Muestras gratuitas</li>
+          <li>PayPal, T/T, tarjeta</li>
+        </ul>
+      </div>
+      <div class="tarjeta acento">
+        <b style="font-size:1.3rem;">MADE IN CHINA</b>
+        <small>made-in-china.com</small>
+        <ul class="puntos" style="margin-top:1rem;">
+          <li>15-30% más barato que Alibaba</li>
+          <li>Fábrica verificada real</li>
+          <li>Inspección gratuita</li>
+          <li>Soporte en español</li>
+          <li>Pagos flexibles y seguros</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 4: PRECIOS REALES -->
+  <section class="slide">
+    <div class="kicker">02b — Cotización Real</div>
+    <h2>Precios Alibaba vs Made in China</h2>
+    <div class="subrayado"></div>
+    <table>
+      <tr><th>Componente</th><th>Alibaba (USD)</th><th>Made in China (USD)</th><th>Mejor</th></tr>
+      <tr><td>Paño microfibra x2</td><td>$0.08 - $0.50/u</td><td>$0.05 - $0.30/u</td><td class="mejor">MIC ✓</td></tr>
+      <tr><td>Spray antiestático</td><td>$0.07 - $0.13/u</td><td>$0.05 - $0.10/u</td><td class="mejor">MIC ✓</td></tr>
+      <tr><td>Botella spray 100ml</td><td>$0.10 - $0.20/u</td><td>$0.10 - $0.16/u</td><td style="color:#7a8699;">Empate</td></tr>
+      <tr><td>Cepillo limpieza</td><td>$0.10 - $0.30/u</td><td>$0.08 - $0.25/u</td><td class="mejor">MIC ✓</td></tr>
+      <tr><td>Hisopos x5</td><td>$0.05 - $0.10/u</td><td>$0.008 - $0.08/u</td><td class="mejor">MIC ✓</td></tr>
+      <tr><td>Pasta térmica 1g</td><td>$0.04 - $0.07/u</td><td>$0.03 - $0.05/u</td><td class="mejor">MIC ✓</td></tr>
+      <tr><td>Espátula plástica</td><td>$0.03 - $0.06/u</td><td>$0.02 - $0.05/u</td><td class="mejor">MIC ✓</td></tr>
+      <tr><td>Guantes nitrilo x2</td><td>$0.02 - $0.10/u</td><td>$0.01 - $0.08/u</td><td class="mejor">MIC ✓</td></tr>
+      <tr><td>Alcohol isopropílico</td><td>$0.80 - $1.00/kg</td><td>$0.70 - $0.90/kg</td><td class="mejor">MIC ✓</td></tr>
+      <tr><td>Etiquetas x10</td><td>$0.15 - $0.30/u</td><td>$0.10 - $0.20/u</td><td class="mejor">MIC ✓</td></tr>
+    </table>
+    <p style="margin-top:1rem; font-size:.82rem; color:#7a8699;">Made in China gana en 9 de 10 componentes. Ahorro promedio: ~30% vs Alibaba.</p>
+  </section>
+
+  <!-- SLIDE 5: COSTO POR KIT -->
+  <section class="slide">
+    <div class="kicker">02c — Costo Real</div>
+    <h2>Inversión por Kit</h2>
+    <div class="subrayado"></div>
+    <div class="fila">
+      <div class="tarjeta" style="border-top:4px solid #7a8699;">
+        <b>$1.50 - $2.50</b>
+        <small>USD por kit<br>(solo productos Alibaba)</small>
+      </div>
+      <div class="tarjeta acento">
+        <b>$1.00 - $1.80</b>
+        <small>USD por kit<br>(solo productos Made in China)</small>
+      </div>
+      <div class="tarjeta" style="border-top:4px solid #1e7a3d;">
+        <b>$4M - $7M</b>
+        <small>COP total 1,000 kits<br>(con envío + empaque)</small>
+      </div>
+    </div>
+    <p style="margin-top:1.5rem; font-size:.88rem; color:#4a5568;">
+      <strong>Desglose:</strong> Productos China: $4M-$7M COP | Envío marítimo: $1.2M-$2M COP | Empaque local: $1M-$1.5M | Etiquetas: $200K-$400K | Marketing: $300K-$600K
+    </p>
+  </section>
+
+  <!-- SLIDE 6: EMPAQUE -->
+  <section class="slide">
+    <div class="kicker">03 — Empaque y Etiqueta</div>
+    <h2>Presentación del Producto</h2>
+    <div class="subrayado"></div>
+    <div class="fila">
+      <div class="tarjeta">
+        <b style="font-size:1.3rem;">📦 Caja Premium</b>
+        <small>Cartón corrugado negro 25×15×5cm. Logo estampado, acabado mate. Se ve profesional y protege el contenido.</small>
+      </div>
+      <div class="tarjeta">
+        <b style="font-size:1.3rem;">🏷️ Etiqueta Vinyl</b>
+        <small>Full color 300 DPI, resistente a agua. QR a tutorial, código de barras, logo de marca.</small>
+      </div>
+      <div class="tarjeta">
+        <b style="font-size:1.3rem;">🔒 Sellado</b>
+        <small>Cinta con logo + precinto de seguridad. Producto precintado y garantizado.</small>
+      </div>
+    </div>
+    <div style="margin-top:2rem; background:#f6f8fb; border:1px solid #dfe5ee; border-radius:10px; padding:1.5rem; max-width:400px; font-size:.88rem;">
+      <div style="color:#16305c; font-weight:bold; text-align:center;">🛠️ KIT TECH</div>
+      <div style="color:#c8933b; font-size:.75rem; text-align:center; margin-bottom:.5rem;">MANTENIMIENTO TECNOLÓGICO</div>
+      <div style="color:#4a5568; line-height:1.5;">
+        Contenido: 10 elementos<br>
+        Para: PC, laptop, consolas<br>
+        ✓ Limpieza profunda ✓ Repaste ✓ Guía<br>
+        <span style="color:#7a8699;">Lote: 001-1000 | Hecho en Colombia 🇨🇴</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 7: PRESUPUESTO -->
+  <section class="slide">
+    <div class="kicker">04 — Presupuesto</div>
+    <h2>Proyección Financiera</h2>
+    <div class="subrayado"></div>
+    <div class="fila">
+      <div class="tarjeta" style="border-top:4px solid #16305c;">
+        <b>$6.9M - $12.5M</b>
+        <small>COP inversión total<br>(productos + envío + empaque)</small>
+      </div>
+      <div class="tarjeta acento">
+        <b>$20M - $35M</b>
+        <small>COP ingreso potencial<br>(1,000 kits a $20K-$35K c/u)</small>
+      </div>
+      <div class="tarjeta" style="border-top:4px solid #1e7a3d;">
+        <b>$7.5M - $28M</b>
+        <small>COP ganancia neta<br>(margen: 65-80%)</small>
+      </div>
+    </div>
+    <div style="margin-top:1.5rem;">
+      <table style="max-width:600px;">
+        <tr><th>Precio Venta</th><th>Unidades</th><th>Ingreso</th><th>Ganancia</th></tr>
+        <tr><td>$20,000 COP</td><td>1,000</td><td>$20M</td><td class="mejor">$7.5M - $13M</td></tr>
+        <tr><td>$25,000 COP</td><td>1,000</td><td>$25M</td><td class="mejor">$12.5M - $18M</td></tr>
+        <tr><td>$35,000 COP</td><td>1,000</td><td>$35M</td><td class="mejor">$22.5M - $28M</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- SLIDE 8: CRONOGRAMA -->
+  <section class="slide">
+    <div class="kicker">05 — Cronograma</div>
+    <h2>Plan de Ejecución</h2>
+    <div class="subrayado"></div>
+    <div class="fila" style="gap:0;">
+      <div class="tarjeta" style="border-radius:10px 0 0 10px; border-right:none;">
+        <b style="font-size:1rem;">SEM 1-2</b>
+        <small>Investigar proveedores, pedir muestras, definir marca</small>
+      </div>
+      <div class="tarjeta" style="border-radius:0; border-right:none;">
+        <b style="font-size:1rem;">SEM 3-4</b>
+        <small>Diseñar logo, etiqueta, empaque, manuales</small>
+      </div>
+      <div class="tarjeta" style="border-radius:0; border-right:none;">
+        <b style="font-size:1rem;">SEM 5-6</b>
+        <small>Comprar en Alibaba/MIC, seguimiento envío</small>
+      </div>
+      <div class="tarjeta" style="border-radius:0; border-right:none;">
+        <b style="font-size:1rem;">SEM 7-10</b>
+        <small>Armado 1,000 kits, control de calidad</small>
+      </div>
+      <div class="tarjeta" style="border-radius:0; border-right:none;">
+        <b style="font-size:1rem;">SEM 11-12</b>
+        <small>Packing final, etiquetado, sellado</small>
+      </div>
+      <div class="tarjeta" style="border-radius:0; border-right:none;">
+        <b style="font-size:1rem;">SEM 13-14</b>
+        <small>Fotos, videos, listings online</small>
+      </div>
+      <div class="tarjeta" style="border-radius:0 10px 10px 0;">
+        <b style="font-size:1rem;">SEM 15-16</b>
+        <small>Abrir tiendas, empezar a vender</small>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 9: CIERRE -->
+  <section class="slide">
+    <div class="kicker">Próximos Pasos</div>
+    <h1>¿Listo para<br>arrancar?</h1>
+    <div class="subrayado"></div>
+    <p>El mercado de mantenimiento tecnológico está creciendo. 1,000 kits con margen del 70%+ te esperan.</p>
+    <ul class="puntos" style="margin-top:1rem;">
+      <li>Definir nombre y marca del kit</li>
+      <li>Cotizar con 3 proveedores por componente</li>
+      <li>Diseñar logo, etiqueta y empaque</li>
+      <li>Crear perfil en MercadoLibre/redes sociales</li>
+      <li>Hacer muestra con 10 kits para validar</li>
+      <li>Producir lote completo</li>
+      <li>Lanzar campaña de marketing</li>
+    </ul>
+    <div class="fila" style="margin-top:2rem;">
+      <div class="tarjeta acento"><b>$4M - $7M</b><small>Inversión inicial COP</small></div>
+      <div class="tarjeta" style="border-top:4px solid #1e7a3d;"><b>$7.5M - $28M</b><small>Ganancia neta COP</small></div>
+    </div>
+  </section>
+
+</div>
+
+<button class="flecha" id="prev">‹</button>
+<button class="flecha" id="next">›</button>
+<div class="nav" id="dots"></div>
+<div class="pie" id="contador"></div>
+
+<script>
+  const deck=document.getElementById('deck'),slides=[...document.querySelectorAll('.slide')];
+  let i=0;
+  const dots=document.getElementById('dots');
+  slides.forEach((_,n)=>{const d=document.createElement('div');d.className='dot';d.onclick=()=>ir(n);dots.appendChild(d);});
+  function ir(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    deck.style.transform=`translateX(-${i*100}vw)`;
+    slides.forEach((s,k)=>s.classList.toggle('activa',k===i));
+    dots.querySelectorAll('.dot').forEach((d,k)=>d.classList.toggle('activa',k===i));
+    document.getElementById('contador').textContent=`${i+1} / ${slides.length}`;
+  }
+  document.getElementById('prev').onclick=()=>ir(i-1);
+  document.getElementById('next').onclick=()=>ir(i+1);
+  addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')ir(i+1);if(e.key==='ArrowLeft')ir(i-1);});
+  // Parallax sutil
+  addEventListener('mousemove',e=>{
+    const x=e.clientX/innerWidth-.5, y=e.clientY/innerHeight-.5;
+    document.querySelectorAll('.capa-f').forEach(c=>{
+      c.style.translate=`${-x*(+c.dataset.p)}px ${-y*(+c.dataset.p)}px`;
+    });
+  });
+  ir(0);
+</script>
+</body>
+</html>
